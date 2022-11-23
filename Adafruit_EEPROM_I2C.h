@@ -8,9 +8,12 @@
 
 #include <Adafruit_I2CDevice.h>
 #include <Arduino.h>
+#include <STMWire.h>
 
 ///<* 1010 + A2 + A1 + A0 = 0x50 default */
 #define EEPROM_DEFAULT_ADDRESS (0x50)
+
+#define TwoWire STMWire
 
 /*!
  *    @brief  Class that stores state and functions for interacting with
@@ -20,7 +23,7 @@ class Adafruit_EEPROM_I2C {
 public:
   Adafruit_EEPROM_I2C(void);
 
-  bool begin(uint8_t addr = EEPROM_DEFAULT_ADDRESS, TwoWire *theWire = &Wire);
+  bool begin(uint8_t addr = EEPROM_DEFAULT_ADDRESS, I2C_HandleTypeDef *handle = NULL);
   bool write(uint16_t addr, uint8_t value);
   uint8_t read(uint16_t addr);
   bool write(uint16_t addr, uint8_t *buffer, uint16_t num);

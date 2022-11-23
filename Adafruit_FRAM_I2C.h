@@ -34,12 +34,12 @@ class Adafruit_FRAM_I2C : public Adafruit_EEPROM_I2C {
 public:
   Adafruit_FRAM_I2C(void);
 
-  bool begin(uint8_t addr = MB85RC_DEFAULT_ADDRESS, TwoWire *theWire = &Wire);
+  bool begin(uint8_t addr = MB85RC_DEFAULT_ADDRESS, I2C_HandleTypeDef *handle = NULL);
   void getDeviceID(uint16_t *manufacturerID, uint16_t *productID);
 
 private:
   Adafruit_I2CDevice *i2c_dev2 = NULL;
-  boolean _framInitialised;
+  bool _framInitialised;
 };
 
 #endif

@@ -8,6 +8,10 @@
 
 #include "Adafruit_EEPROM_I2C.h"
 
+#include <stm32yyxx_hal_i2c.h>
+
+extern "C" I2C_HandleTypeDef hi2c1;
+
 /*========================================================================*/
 /*                            CONSTRUCTORS                                */
 /*========================================================================*/
@@ -31,8 +35,18 @@ Adafruit_EEPROM_I2C::Adafruit_EEPROM_I2C(void) {}
  *            The Wire object to be used for I2C connections.
  *    @return True if initialization was successful, otherwise false.
  */
-bool Adafruit_EEPROM_I2C::begin(uint8_t addr, TwoWire *theWire) {
-  i2c_dev = new Adafruit_I2CDevice(addr, theWire);
+bool Adafruit_EEPROM_I2C::begin(uint8_t addr, I2C_HandleTypeDef *handle) {
+
+	if(handle == NULL)
+	{
+		if(hi2c1.State == (HAL_I2C_StateTypeDef::HAL_I2C_STATE_READY))
+			i2c_dev = new Adafruit_I2CDevice(addr, &hi2c1);
+	}
+	else
+	{
+		  i2c_dev = new Adafruit_I2CDevice(addr, handle);
+	}
+
   _addr = addr;
 
   return i2c_dev->begin();

@@ -27,6 +27,8 @@
 
 #include "Adafruit_FRAM_I2C.h"
 
+extern "C" I2C_HandleTypeDef hi2c1;
+
 /*========================================================================*/
 /*                            CONSTRUCTORS                                */
 /*========================================================================*/
@@ -50,11 +52,15 @@ Adafruit_FRAM_I2C::Adafruit_FRAM_I2C(void) { _framInitialised = false; }
  *            The Wire object to be used for I2C connections.
  *    @return True if initialization was successful, otherwise false.
  */
-bool Adafruit_FRAM_I2C::begin(uint8_t addr, TwoWire *theWire) {
-  Adafruit_EEPROM_I2C::begin(addr, theWire);
+bool Adafruit_FRAM_I2C::begin(uint8_t addr, I2C_HandleTypeDef *handle) {
+  Adafruit_EEPROM_I2C::begin(addr, handle);
 
   // the MB85 has a secondary address too!
-  i2c_dev2 = new Adafruit_I2CDevice(MB85RC_SECONDARY_ADDRESS, theWire);
+  if(handle == NULL)
+	  i2c_dev2 = new Adafruit_I2CDevice(MB85RC_SECONDARY_ADDRESS, &hi2c1);
+  else
+	  i2c_dev2 = new Adafruit_I2CDevice(MB85RC_SECONDARY_ADDRESS, handle);
+
   if (!i2c_dev2->begin()) {
     return false;
   }
